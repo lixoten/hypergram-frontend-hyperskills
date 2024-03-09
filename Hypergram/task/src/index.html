@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--Stage 1-->
+<!--Stage 2-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,6 +16,11 @@
             height: 600px;
             padding: 2rem;
         }
+        #myCanvas{
+            background-color: orange;
+            padding: 20px;
+            border: double 5px green;
+        }
         button {
             border-radius: 8px;
             border: lightgray 1px solid;
@@ -29,7 +34,7 @@
 </head>
 <body>
 <div id="container">
-    <canvas></canvas>
+    <canvas id="myCanvas"></canvas>
     <div id="controls">
         <input type="file" id="file-input">Upload File
         <label for="brightness">Brightness</label>
@@ -42,7 +47,28 @@
     </div>
 </div>
 <script>
+    const fileUploader = document.getElementById('file-input');
+    const reader = new FileReader();
+    const myCanvas = document.getElementById('myCanvas');
+    const context = myCanvas.getContext('2d');
 
+    fileUploader.addEventListener('change', (event) => {
+        // The target event property returns the element that triggered the event.
+        const files = event.target.files;
+
+        // Get the file object and read the data as URL binary string
+        reader.readAsDataURL(files[0]);
+
+        reader.addEventListener('load', (event) => {
+            const image = new Image();
+            image.onload = () => {
+                myCanvas.width = image.width;
+                myCanvas.height = image.height;
+                context.drawImage(image, 0, 0, myCanvas.width, myCanvas.height); // x and y are the coordinates where the image will be drawn
+            }
+            image.src = event.target.result;
+        });
+    });
 </script>
 </body>
 </html>
