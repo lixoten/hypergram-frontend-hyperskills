@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!--Stage 1-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hypergram</title>
+    <style>
+        #container {
+            display: flex;
+        }
+        #controls {
+            display: flex;
+            flex-direction: column;
+            background-color: yellow;
+            width: 300px;
+            height: 600px;
+            padding: 2rem;
+        }
+        button {
+            border-radius: 8px;
+            border: lightgray 1px solid;
+            background-color: antiquewhite;
+        }
+
+        #file-input {
+            background-color: deeppink;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <canvas></canvas>
+    <div id="controls">
+        <input type="file" id="file-input">Upload File
+        <label for="brightness">Brightness</label>
+        <input type="range" id="brightness">
+        <label for="contrast">Contrast</label>
+        <input type="range" id="contrast">
+        <label for="transparent">Transparent</label>
+        <input type="range" id="transparent">
+        <button id="save-button">Save Image</button>
+    </div>
+</div>
+<script>
+
+</script>
+</body>
+</html>
