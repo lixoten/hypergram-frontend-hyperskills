@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--Stage 2-->
+<!--Stage 3-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +8,7 @@
         #container {
             display: flex;
         }
+
         #controls {
             display: flex;
             flex-direction: column;
@@ -16,11 +17,13 @@
             height: 600px;
             padding: 2rem;
         }
-        #myCanvas{
+
+        #myCanvas {
             background-color: orange;
             padding: 20px;
             border: double 5px green;
         }
+
         button {
             border-radius: 8px;
             border: lightgray 1px solid;
@@ -38,11 +41,11 @@
     <div id="controls">
         <input type="file" id="file-input">Upload File
         <label for="brightness">Brightness</label>
-        <input type="range" id="brightness">
+        <input type="range" id="brightness" min="-255" max="255" step="1">
         <label for="contrast">Contrast</label>
-        <input type="range" id="contrast">
+        <input type="range" id="contrast" min="-128" max="128" step="1">
         <label for="transparent">Transparent</label>
-        <input type="range" id="transparent">
+        <input type="range" id="transparent" min="0" max="1" value="1" step="0.1">
         <button id="save-button">Save Image</button>
     </div>
 </div>
@@ -50,7 +53,10 @@
     const fileUploader = document.getElementById('file-input');
     const reader = new FileReader();
     const myCanvas = document.getElementById('myCanvas');
+
+    //  Get the 2D context of the canvas: This allows you to interact with the canvas.
     const context = myCanvas.getContext('2d');
+    const image = new Image();
 
     fileUploader.addEventListener('change', (event) => {
         // The target event property returns the element that triggered the event.
@@ -60,15 +66,66 @@
         reader.readAsDataURL(files[0]);
 
         reader.addEventListener('load', (event) => {
-            const image = new Image();
+            //const image = new Image(); //... should be global
             image.onload = () => {
                 myCanvas.width = image.width;
                 myCanvas.height = image.height;
                 context.drawImage(image, 0, 0, myCanvas.width, myCanvas.height); // x and y are the coordinates where the image will be drawn
+
             }
             image.src = event.target.result;
         });
     });
+
+    const brightnessInput = document.getElementById('brightness');
+    const contrastInput = document.getElementById('contrast');
+    const transparentInput = document.getElementById('transparent');
+    const saveButton = document.getElementById('save-button');
+
+    //brightnessInput.addEventListener('change', adjustImage);
+    brightnessInput.addEventListener('change', () => {
+    // brightnessInput.addEventListener('change', (event) => {
+        adjustImage();
+    });
+    //contrastInput.addEventListener('change', adjustImage);
+    contrastInput.addEventListener('change', () => {
+        adjustImage();
+    });
+    //transparentInput.addEventListener('change', adjustImage);
+    transparentInput.addEventListener('change', () => {
+        adjustImage();
+    });
+    saveButton.addEventListener('click', () => {
+        saveButton.style.backgroundColor = "red";
+    });
+
+    //function adjustImage() {
+    const adjustImage = () => {
+        const brightnessValue = parseInt(brightnessInput.value);
+        const contrastValue = parseInt(contrastInput.value);
+        const transparentValue = parseFloat(transparentInput.value);
+
+
+        //context.drawImage(image, 0, 0);
+        context.drawImage(image, 0, 0, myCanvas.width, myCanvas.height);
+        const imageData = context.getImageData(0, 0, myCanvas.width, myCanvas.height);
+        const pixels = imageData.data;
+
+        let factor = 259 * (255 + contrastValue) / (255 * (259 - contrastValue));
+
+        for (let i = 0; i <= pixels.length - 4; i += 4) {
+            pixels[i] = truncate(brightnessValue + factor * (pixels[i] - 128) + 128); // red
+            pixels[i + 1] = truncate(brightnessValue + factor * (pixels[i + 1] - 128) + 128); // green
+            pixels[i + 2] = truncate(brightnessValue + factor * (pixels[i + 2] - 128) + 128); // blue
+            pixels[i + 3] = pixels[i + 3] * transparentValue;
+        }
+        // Apply the updated pixel values to the canvas?
+        context.putImageData(imageData, 0, 0);
+    }
+
+    function truncate(value) {
+        return value > 255 ? 255 : value < 0 ? 0 : value;
+    }
 </script>
 </body>
 </html>
