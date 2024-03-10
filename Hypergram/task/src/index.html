@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--Stage 3-->
+<!--Stage 4-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,26 +12,45 @@
         #controls {
             display: flex;
             flex-direction: column;
-            background-color: yellow;
+            align-items: center;
+            background-color: #97bad1;
             width: 300px;
             height: 600px;
             padding: 2rem;
         }
+        input,
+        button {
+            width: 100%;
+        }
 
         #myCanvas {
-            background-color: orange;
+            background-color: whitesmoke;
             padding: 20px;
             border: double 5px green;
         }
 
         button {
-            border-radius: 8px;
-            border: lightgray 1px solid;
-            background-color: antiquewhite;
+            border-radius: 4px;
+            border: none;
+            margin-top: 32px;
+            padding:4px;
+            background-color: grey;
         }
 
         #file-input {
-            background-color: deeppink;
+            display: none;
+        }
+        label[for="file-input"] {
+            padding: 10px 20px;
+            margin-bottom: 16px;
+            background-color: #eeafb8;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background .2s ease-in-out;
+        }
+
+        label[for="file-input"]:hover {
+            background-color: #e096a1;
         }
     </style>
 </head>
@@ -39,7 +58,9 @@
 <div id="container">
     <canvas id="myCanvas"></canvas>
     <div id="controls">
-        <input type="file" id="file-input">Upload File
+        <input type="file" id="file-input">
+        <label for="file-input">Upload File</label>
+
         <label for="brightness">Brightness</label>
         <input type="range" id="brightness" min="-255" max="255" step="1">
         <label for="contrast">Contrast</label>
@@ -82,21 +103,20 @@
     const transparentInput = document.getElementById('transparent');
     const saveButton = document.getElementById('save-button');
 
-    //brightnessInput.addEventListener('change', adjustImage);
     brightnessInput.addEventListener('change', () => {
-    // brightnessInput.addEventListener('change', (event) => {
         adjustImage();
     });
-    //contrastInput.addEventListener('change', adjustImage);
     contrastInput.addEventListener('change', () => {
         adjustImage();
     });
-    //transparentInput.addEventListener('change', adjustImage);
     transparentInput.addEventListener('change', () => {
         adjustImage();
     });
     saveButton.addEventListener('click', () => {
-        saveButton.style.backgroundColor = "red";
+        const link = document.createElement('a');
+        link.href = myCanvas.toDataURL('image/png');
+        link.download = 'result.png';
+        link.click();
     });
 
     //function adjustImage() {
